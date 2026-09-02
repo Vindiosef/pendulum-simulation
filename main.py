@@ -6,19 +6,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-#Data
-l = 1.0         #pendulum length in m
-angle = 30      #deflection angle
-d = 0.0         #damping
-m = 10          #mass in kg
-tmax = 15       #simulation duration
-g = 9.81        #m/s^2
-w02 = g/l       #square of the circular frequency
+import solvers
 
-#solution of the differential equation using the Euler Method
-dt = 1e-3       #increment
-
-t = np.arange(0, tmax, dt)
+tmax = solvers.config.duration
+t = solvers.time()
+angle = solvers.config.angle
 
 phi_linear, w_linear = np.empty((len(t))), np.empty((len(t)))
 phi_euler, w_euler = np.empty((len(t))), np.empty((len(t)))
@@ -33,30 +25,8 @@ x_euler, y_euler = np.empty((len(t))), np.empty((len(t)))
 v_euler = np.empty((len(t)))
 x_euler[0] = y_euler[0] = 0
 
-
-#Euler Numerical Solution Function
-def euler(phi, w):
-    for i in range(len(t) - 1):
-        phi[i+1] = phi[i] + w[i]*dt
-        w[i+1] = w[i] - w02*np.sin(phi[i])*dt - d*w[i]*dt
-
-    v = l * w
-    x, y = l * np.sin(phi), -l * np.cos(phi)
-    
-    return x, y, v, phi, w
-
-def linearised(phi, w):
-    for i in range(len(t) - 1):
-        phi[i+1] = phi[i] + w[i]*dt
-        w[i+1] = w[i] - w02*phi[i]*dt - d*w[i]*dt
-
-    v = l * w
-    x, y = l * np.sin(phi), -l * np.cos(phi)
-
-    return x, y, v, phi, w
-
-x_euler, y_euler, v_euler, phi_euler, w_euler = euler(phi_euler, w_euler)
-x_linear, y_linear, v_linear, phi_linear, w_linear = linearised(phi_linear, w_linear)
+x_euler, y_euler, v_euler, phi_euler, w_euler = solvers.euler(phi_euler, w_euler, t)
+x_linear, y_linear, v_linear, phi_linear, w_linear = solvers.linearised(phi_linear, w_linear, t)
 
 def pendulum(j):
 #    h = l+y[j]

@@ -1,12 +1,19 @@
 from dataclasses import dataclass
+import numpy as np
 
 @dataclass
 class PendulumConfig:
-    length: float = 1.0
-    angle: float = 120.0
-    damping: float = 0.0
+    #parameters
+    length: float = 1.0 
+    damping: float = 0.6
     mass: float = 10.0
-    duration: float = 15
     gravity: float = 9.81
-    dt: float = 1e-3
+     
+    #initial conditions
+    angle: float = np.deg2rad(80.0)
+    angular_velocity: float = 0
+    
+    #sim parameters
+    duration: float = 15
+    dt: float = 1e-2
 
